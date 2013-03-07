@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 import urllib2
 import re
