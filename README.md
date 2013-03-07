@@ -37,7 +37,9 @@ python dbank.py http://dl.vmall.com/c0o1b6khfw --resume
 Note
 ----
 Only tested in `python 2.7.x` and `wget 1.14`.
+
 Support both `dbank.com` and `vmall.com` domain.
+
 DBank has two type crypts, only test the `ed` one.
 
 
@@ -83,5 +85,7 @@ python dbank.py http://dl.vmall.com/c0o1b6khfw --resume
 备注
 ----
 仅在 `python 2.7.x` 和 `wget 1.14` 下测试。
+
 支持 `dbank.com` 和 `vmall.com` 两种域名。
+
 DBank 有两种加密方式，只测试过 `ed` 方式。
