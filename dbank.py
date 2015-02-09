@@ -8,6 +8,7 @@ import base64
 import hashlib
 import distutils.spawn
 import subprocess
+import os.path
 
 
 # decrypt 'eb' type, NO test.
@@ -73,13 +74,23 @@ def decrypt(g, e):
     return d
 
 
+def is_htmlfile(file_name):
+    """ dbank will return html code sometimes. detect it. """
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            head = f.read(9)
+            if head == '<!DOCTYPE':
+                return True
+    return False
+
+
 # call wget to download
 def wget_download(download_url, file_name='', resume=False):
     wget_cmd = ['wget', download_url]
     if file_name != '':
         wget_cmd.append('-O')
         wget_cmd.append(file_name)
-    if resume:
+    if resume and not is_htmlfile(file_name):
         wget_cmd.append('-c')
     assert distutils.spawn.find_executable(wget_cmd[0]), "Cannot find %s" % wget_cmd[0]
     exit_code = subprocess.call(wget_cmd)
@@ -91,6 +102,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DBank Downloader')
     parser.add_argument('url', help='DBank URL')
     parser.add_argument('--resume', help='Resume getting a partially-downloaded file.', action='store_true')
+    parser.add_argument('--only-showurl', dest='showurl', help='No download, only show download url', action='store_true')
     args = parser.parse_args()
 
     # replace dbank.com to vmail.com in url
@@ -130,7 +142,9 @@ if __name__ == '__main__':
         downloadurl = files['downloadurl']
         url = decrypt(downloadurl, e)
 
-        if args.resume:
+        if args.showurl:
+            print('%s: %s' % (fn, url))
+        elif args.resume:
             wget_download(url, fn, True)
         else:
             wget_download(url, fn)
