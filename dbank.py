@@ -91,6 +91,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DBank Downloader')
     parser.add_argument('url', help='DBank URL')
     parser.add_argument('--resume', help='Resume getting a partially-downloaded file.', action='store_true')
+    parser.add_argument('--only-showurl', dest='showurl', help='No download, only show download url', action='store_true')
     args = parser.parse_args()
 
     # replace dbank.com to vmail.com in url
@@ -130,7 +131,9 @@ if __name__ == '__main__':
         downloadurl = files['downloadurl']
         url = decrypt(downloadurl, e)
 
-        if args.resume:
+        if args.showurl:
+            print('%s: %s' % (fn, url))
+        elif args.resume:
             wget_download(url, fn, True)
         else:
             wget_download(url, fn)
