@@ -8,6 +8,7 @@ import base64
 import hashlib
 import distutils.spawn
 import subprocess
+import os.path
 
 
 # decrypt 'eb' type, NO test.
@@ -73,13 +74,23 @@ def decrypt(g, e):
     return d
 
 
+def is_htmlfile(file_name):
+    """ dbank will return html code sometimes. detect it. """
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            head = f.read(9)
+            if head == '<!DOCTYPE':
+                return True
+    return False
+
+
 # call wget to download
 def wget_download(download_url, file_name='', resume=False):
     wget_cmd = ['wget', download_url]
     if file_name != '':
         wget_cmd.append('-O')
         wget_cmd.append(file_name)
-    if resume:
+    if resume and not is_htmlfile(file_name):
         wget_cmd.append('-c')
     assert distutils.spawn.find_executable(wget_cmd[0]), "Cannot find %s" % wget_cmd[0]
     exit_code = subprocess.call(wget_cmd)
